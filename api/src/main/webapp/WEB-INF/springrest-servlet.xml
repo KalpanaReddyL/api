@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+ 
+    <context:annotation-config />
+    <mvc:annotation-driven/>
+
+	
+    <!-- For the Stereotype annotations to work -->
+    <context:component-scan base-package="org.scott.power.api" />
+    <context:component-scan base-package="org.scott.power.api.service" />
+    <context:component-scan base-package="org.scott.power.api.repository" />
+    <context:component-scan base-package="org.scott.power.api.component" />
+    	
+    <bean id="dbBean"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.sqlite.JDBC" />
+        <property name="url"
+            value="jdbc:sqlite:/Users/kalpana/Documents/CodingExerciseWorkspace/api/data.db" />
+    </bean>
+ 
+    <!-- Hibernate session factory -->
+    <bean id="sfBean"
+        class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dbBean" />
+        <property name="annotatedClasses">
+            <array>
+                <value>org.scott.power.api.model.PowerDetails</value>
+            </array>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.SQLiteDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="template" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="sfBean" />
+    </bean>
+</beans>
